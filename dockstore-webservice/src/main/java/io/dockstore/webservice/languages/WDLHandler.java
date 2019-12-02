@@ -62,8 +62,35 @@ public class WDLHandler implements LanguageHandlerInterface {
     public static final String ERROR_PARSING_WORKFLOW_YOU_MAY_HAVE_A_RECURSIVE_IMPORT = "Error parsing workflow. You may have a recursive import.";
     private static final Pattern IMPORT_PATTERN = Pattern.compile("^import\\s+\"(\\S+)\"");
 
+    public static void checkForRecursiveLocalImports(String content, Set<SourceFile> sourceFiles, Set<String> localFilePaths) {
+        // Use matcher to get imports
+        String[] lines = StringUtils.split(content, '\n');
+
+        for (String line : lines) {
+            Matcher m = IMPORT_PATTERN.matcher(line);
+
+            while (m.find()) {
+                String match = m.group(1);
+                if (!match.startsWith("http://") && !match.startsWith("https://")) { // Don't resolve URLs
+                    String localImport = match.replaceFirst("file://", "");
+                    if (localFilePaths.contains(localImport)) {
+                        throw new CustomWebApplicationException("Recursive local import detected", HttpStatus.SC_BAD_REQUEST);
+                    }
+                    localFilePaths.add(localImport); // remove file:// from path
+                    Optional<SourceFile> localImportContent = sourceFiles.stream()
+                            .filter(sourceFile -> sourceFile.getPath().equals(localImport)).findFirst();
+                    if (localImportContent.isPresent()) {
+                        checkForRecursiveLocalImports(localImportContent.get().getContent(), sourceFiles, localFilePaths);
+                    }
+                }
+            }
+        }
+
+    }
+
     @Override
     public Version parseWorkflowContent(String filepath, String content, Set<SourceFile> sourceFiles, Version version) {
+        checkForRecursiveLocalImports(content, sourceFiles, new HashSet<>());
         WdlBridge wdlBridge = new WdlBridge();
         final Map<String, String> secondaryFiles = sourceFiles.stream()
                 .collect(Collectors.toMap(SourceFile::getAbsolutePath, SourceFile::getContent));
