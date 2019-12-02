@@ -62,10 +62,11 @@ public class WDLHandler implements LanguageHandlerInterface {
     public static final String ERROR_PARSING_WORKFLOW_YOU_MAY_HAVE_A_RECURSIVE_IMPORT = "Error parsing workflow. You may have a recursive import.";
     private static final Pattern IMPORT_PATTERN = Pattern.compile("^import\\s+\"(\\S+)\"");
 
-    public static void checkForRecursiveLocalImports(String content, Set<SourceFile> sourceFiles, Set<String> localFilePaths) {
+    public static void checkForRecursiveLocalImports(String content, Set<SourceFile> sourceFiles, Set<String> localFilePaths)
+            throws Exception {
         // Use matcher to get imports
         String[] lines = StringUtils.split(content, '\n');
-
+        sourceFiles.forEach(localFilePath -> localFilePath.setPath(localFilePath.getPath().replaceFirst("/", "")));
         for (String line : lines) {
             Matcher m = IMPORT_PATTERN.matcher(line);
 
@@ -74,13 +75,16 @@ public class WDLHandler implements LanguageHandlerInterface {
                 if (!match.startsWith("http://") && !match.startsWith("https://")) { // Don't resolve URLs
                     String localImport = match.replaceFirst("file://", "");
                     if (localFilePaths.contains(localImport)) {
-                        throw new CustomWebApplicationException("Recursive local import detected", HttpStatus.SC_BAD_REQUEST);
+                        throw new Exception("Recursive local import detected");
                     }
-                    localFilePaths.add(localImport); // remove file:// from path
+                    // Creating a new set to avoid false positive caused by multiple "branches" that have the same import
+                    Set<String> newLocalFilePaths = new HashSet<>();
+                    newLocalFilePaths.addAll(localFilePaths);
+                    newLocalFilePaths.add(localImport); // remove file:// from path
                     Optional<SourceFile> localImportContent = sourceFiles.stream()
                             .filter(sourceFile -> sourceFile.getPath().equals(localImport)).findFirst();
                     if (localImportContent.isPresent()) {
-                        checkForRecursiveLocalImports(localImportContent.get().getContent(), sourceFiles, localFilePaths);
+                        checkForRecursiveLocalImports(localImportContent.get().getContent(), sourceFiles, newLocalFilePaths);
                     }
                 }
             }
@@ -90,17 +94,19 @@ public class WDLHandler implements LanguageHandlerInterface {
 
     @Override
     public Version parseWorkflowContent(String filepath, String content, Set<SourceFile> sourceFiles, Version version) {
-        checkForRecursiveLocalImports(content, sourceFiles, new HashSet<>());
+        try {
+            checkForRecursiveLocalImports(content, sourceFiles, new HashSet<>());
+        } catch (Exception e) {
+            return version;
+        }
         WdlBridge wdlBridge = new WdlBridge();
         final Map<String, String> secondaryFiles = sourceFiles.stream()
                 .collect(Collectors.toMap(SourceFile::getAbsolutePath, SourceFile::getContent));
         wdlBridge.setSecondaryFiles((HashMap<String, String>)secondaryFiles);
-
         File tempMainDescriptor = null;
         try {
             tempMainDescriptor = File.createTempFile("main", "descriptor", Files.createTempDir());
             Files.asCharSink(tempMainDescriptor, StandardCharsets.UTF_8).write(content);
-
             try {
                 List<Map<String, String>> metadata = wdlBridge.getMetadata(tempMainDescriptor.getAbsolutePath(), filepath);
                 Set<String> authors = new HashSet<>();

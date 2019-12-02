@@ -88,13 +88,11 @@ public class WDLParseTest {
         Set<SourceFile> sourceFiles = new HashSet<>();
         sourceFiles.add(sourceFile1);
         sourceFiles.add(sourceFile2);
-        Version version = new WorkflowVersion();
-        LanguageHandlerInterface anInterface = LanguageHandlerFactory.getInterface(DescriptorLanguage.WDL);
         try {
             WDLHandler.checkForRecursiveLocalImports(sourceFile1.getContent(), sourceFiles, new HashSet<>());
             Assert.fail("Should have detected recursive local import");
-        } catch (CustomWebApplicationException e) {
-            Assert.assertEquals("Recursive local import detected", e.getErrorMessage());
+        } catch (Exception e) {
+            Assert.assertEquals("Recursive local import detected", e.getMessage());
         }
     }
 
