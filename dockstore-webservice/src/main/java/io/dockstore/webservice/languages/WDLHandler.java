@@ -66,7 +66,6 @@ public class WDLHandler implements LanguageHandlerInterface {
             throws Exception {
         // Use matcher to get imports
         String[] lines = StringUtils.split(content, '\n');
-        sourceFiles.forEach(localFilePath -> localFilePath.setPath(localFilePath.getPath().replaceFirst("/", "")));
         for (String line : lines) {
             Matcher m = IMPORT_PATTERN.matcher(line);
 
@@ -74,13 +73,13 @@ public class WDLHandler implements LanguageHandlerInterface {
                 String match = m.group(1);
                 if (!match.startsWith("http://") && !match.startsWith("https://")) { // Don't resolve URLs
                     String localImport = match.replaceFirst("file://", "");
-                    if (localFilePaths.contains(localImport)) {
+                    if (localFilePaths.contains(localImport.replaceFirst("/", ""))) {
                         throw new Exception("Recursive local import detected");
                     }
                     // Creating a new set to avoid false positive caused by multiple "branches" that have the same import
                     Set<String> newLocalFilePaths = new HashSet<>();
                     newLocalFilePaths.addAll(localFilePaths);
-                    newLocalFilePaths.add(localImport); // remove file:// from path
+                    newLocalFilePaths.add(localImport.replaceFirst("/", "")); // remove file:// from path
                     Optional<SourceFile> localImportContent = sourceFiles.stream()
                             .filter(sourceFile -> sourceFile.getPath().equals(localImport)).findFirst();
                     if (localImportContent.isPresent()) {
@@ -95,8 +94,11 @@ public class WDLHandler implements LanguageHandlerInterface {
     @Override
     public Version parseWorkflowContent(String filepath, String content, Set<SourceFile> sourceFiles, Version version) {
         try {
-            checkForRecursiveLocalImports(content, sourceFiles, new HashSet<>());
+            Set<SourceFile> testSourceFiles = new HashSet<>();
+            testSourceFiles.addAll(sourceFiles);
+            checkForRecursiveLocalImports(content, testSourceFiles, new HashSet<>());
         } catch (Exception e) {
+            LOG.info("Recursive local imports found: " + version.getName());
             return version;
         }
         WdlBridge wdlBridge = new WdlBridge();
