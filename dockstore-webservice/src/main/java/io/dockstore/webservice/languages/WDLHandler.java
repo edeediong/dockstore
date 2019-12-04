@@ -73,13 +73,13 @@ public class WDLHandler implements LanguageHandlerInterface {
                 String match = m.group(1);
                 if (!match.startsWith("http://") && !match.startsWith("https://")) { // Don't resolve URLs
                     String localImport = match.replaceFirst("file://", "");
-                    if (localFilePaths.contains(localImport.replaceFirst("/", ""))) {
+                    if (localFilePaths.contains(localImport)) {
                         throw new Exception("Recursive local import detected");
                     }
                     // Creating a new set to avoid false positive caused by multiple "branches" that have the same import
                     Set<String> newLocalFilePaths = new HashSet<>();
                     newLocalFilePaths.addAll(localFilePaths);
-                    newLocalFilePaths.add(localImport.replaceFirst("/", "")); // remove file:// from path
+                    newLocalFilePaths.add(localImport); // remove file:// from path
                     Optional<SourceFile> localImportContent = sourceFiles.stream()
                             .filter(sourceFile -> sourceFile.getPath().equals(localImport)).findFirst();
                     if (localImportContent.isPresent()) {
@@ -96,6 +96,9 @@ public class WDLHandler implements LanguageHandlerInterface {
         try {
             Set<SourceFile> testSourceFiles = new HashSet<>();
             testSourceFiles.addAll(sourceFiles);
+            testSourceFiles.forEach(testSourceFile -> {
+                testSourceFile.setPath(testSourceFile.getPath().replaceFirst("/", ""));
+            });
             checkForRecursiveLocalImports(content, testSourceFiles, new HashSet<>());
         } catch (Exception e) {
             LOG.info("Recursive local imports found: " + version.getName());
