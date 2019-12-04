@@ -89,7 +89,7 @@ public class WDLParseTest {
         sourceFiles.add(sourceFile1);
         sourceFiles.add(sourceFile2);
         try {
-            WDLHandler.checkForRecursiveLocalImports(sourceFile1.getContent(), sourceFiles, new HashSet<>());
+            WDLHandler.checkForRecursiveLocalImports(sourceFile1.getContent(), sourceFiles, new HashSet<>(), "/");
             Assert.fail("Should have detected recursive local import");
         } catch (Exception e) {
             Assert.assertEquals("Recursive local import detected", e.getMessage());
