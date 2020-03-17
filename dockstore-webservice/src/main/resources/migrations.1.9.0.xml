@@ -83,4 +83,19 @@
         <addNotNullConstraint tableName="workflowversion" columnName="islegacyversion"/>
     </changeSet>
 
+    <changeSet author="aduncan (generated)" id="addStateColumnRemoveIsPublished">
+        <addColumn tableName="service">
+            <column name="state" type="int4"/>
+        </addColumn>
+        <addColumn tableName="tool">
+            <column name="state" type="int4"/>
+        </addColumn>
+        <addColumn tableName="workflow">
+            <column name="state" type="int4"/>
+        </addColumn>
+        <dropColumn columnName="ispublished" tableName="service"/>
+        <dropColumn columnName="ispublished" tableName="tool"/>
+        <dropColumn columnName="ispublished" tableName="workflow"/>
+    </changeSet>
+
 </databaseChangeLog>
