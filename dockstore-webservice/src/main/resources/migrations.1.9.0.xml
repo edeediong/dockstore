@@ -85,13 +85,19 @@
 
     <changeSet author="aduncan (generated)" id="addStateColumnRemoveIsPublished">
         <addColumn tableName="service">
-            <column name="state" type="int4"/>
+            <column defaultValue="DRAFT" name="state" type="text">
+                <constraints nullable="false"/>
+            </column>
         </addColumn>
         <addColumn tableName="tool">
-            <column name="state" type="int4"/>
+            <column defaultValue="DRAFT" name="state" type="text">
+                <constraints nullable="false"/>
+            </column>
         </addColumn>
         <addColumn tableName="workflow">
-            <column name="state" type="int4"/>
+            <column defaultValue="DRAFT" name="state" type="text">
+                <constraints nullable="false"/>
+            </column>
         </addColumn>
         <dropColumn columnName="ispublished" tableName="service"/>
         <dropColumn columnName="ispublished" tableName="tool"/>

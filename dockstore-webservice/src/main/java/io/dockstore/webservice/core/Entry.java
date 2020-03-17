@@ -33,6 +33,7 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -141,7 +142,8 @@ public abstract class Entry<S extends Entry, T extends Version> implements Compa
     @ApiModelProperty(value = "This is the default version of the entry", position = 7)
     private String defaultVersion;
 
-    @Column
+    @Column(nullable = false, columnDefinition = "Text default 'DRAFT'")
+    @Enumerated(EnumType.STRING)
     @ApiModelProperty(value = "The state that the workflow is in", position = 8, required = true)
     private State state = State.DRAFT;
 
