@@ -275,8 +275,8 @@ public class ServiceIT extends BaseIT {
         assertNotNull(workflow);
 
         // forcibly publish both for testing
-        testingPostgres.runUpdateStatement("update workflow set ispublished = 't'");
-        testingPostgres.runUpdateStatement("update service set ispublished = 't'");
+        testingPostgres.runUpdateStatement("update workflow set state = 'PUBLISHED'");
+        testingPostgres.runUpdateStatement("update service set state = 'PUBLISHED'");
 
         // test retrieval
         final io.swagger.client.model.Workflow returnedWorkflow = client.getPublishedWorkflowByPath(github + "/" + serviceRepo, "", false);

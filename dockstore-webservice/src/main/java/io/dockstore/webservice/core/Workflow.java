@@ -92,7 +92,7 @@ import org.hibernate.annotations.Check;
     @JsonSubTypes.Type(value = Service.class, name = "Service") })
 public abstract class Workflow extends Entry<Workflow, WorkflowVersion> {
 
-    static final String PUBLISHED_QUERY = " FROM Workflow c WHERE c.isPublished = true ";
+    static final String PUBLISHED_QUERY = " FROM Workflow c WHERE c.state = 'PUBLISHED' ";
 
     @Column(nullable = false, columnDefinition = "Text default 'STUB'")
     @Enumerated(EnumType.STRING)

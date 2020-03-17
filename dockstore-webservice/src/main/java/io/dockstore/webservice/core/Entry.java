@@ -142,7 +142,7 @@ public abstract class Entry<S extends Entry, T extends Version> implements Compa
     private String defaultVersion;
 
     @Column
-    @ApiModelProperty(value = "The state that the workflow is in", position = 8)
+    @ApiModelProperty(value = "The state that the workflow is in", position = 8, required = true)
     private State state = State.DRAFT;
 
     @Column

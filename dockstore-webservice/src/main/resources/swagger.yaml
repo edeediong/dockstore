@@ -6340,6 +6340,7 @@ definitions:
     - "namespace"
     - "private_access"
     - "registry_string"
+    - "state"
     properties:
       aliases:
         type: "object"
@@ -6587,6 +6588,7 @@ definitions:
     type: "object"
     required:
     - "gitUrl"
+    - "state"
     properties:
       aliases:
         type: "object"
@@ -8054,6 +8056,7 @@ definitions:
     - "organization"
     - "repository"
     - "sourceControl"
+    - "state"
     - "workflow_path"
     discriminator: "type"
     properties:
