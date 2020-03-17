@@ -99,6 +99,18 @@
                 <constraints nullable="false"/>
             </column>
         </addColumn>
+
+        <sql dbms="postgres">
+            UPDATE service SET state = 'PUBLISHED' WHERE ispublished = true;
+            UPDATE service SET state = 'DRAFT' WHERE ispublished = false;
+
+            UPDATE tool SET state = 'PUBLISHED' WHERE ispublished = true;
+            UPDATE tool SET state = 'DRAFT' WHERE ispublished = false;
+
+            UPDATE workflow SET state = 'PUBLISHED' WHERE ispublished = true;
+            UPDATE workflow SET state = 'DRAFT' WHERE ispublished = false;
+        </sql>
+
         <dropColumn columnName="ispublished" tableName="service"/>
         <dropColumn columnName="ispublished" tableName="tool"/>
         <dropColumn columnName="ispublished" tableName="workflow"/>
