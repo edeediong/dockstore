@@ -61,6 +61,7 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 import io.dockstore.common.DescriptorLanguage;
 import io.dockstore.common.EntryType;
+import io.dockstore.common.State;
 import io.dockstore.webservice.helpers.EntryStarredSerializer;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.CreationTimestamp;
@@ -89,11 +90,11 @@ import org.hibernate.annotations.UpdateTimestamp;
         "SELECT 'tool' as type, id from tool where registry = :one and namespace = :two and name = :three and toolname IS NULL union"
             + " select 'workflow' as type, id from workflow where sourcecontrol = :one and organization = :two and repository = :three and workflowname IS NULL"),
     @NamedNativeQuery(name = "Entry.getPublishedEntryByPath", query =
-        "SELECT 'tool' as type, id from tool where registry = :one and namespace = :two and name = :three and toolname = :four and ispublished = TRUE union"
-            + " select 'workflow' as type, id from workflow where sourcecontrol = :one and organization = :two and repository = :three and workflowname = :four and ispublished = TRUE"),
+        "SELECT 'tool' as type, id from tool where registry = :one and namespace = :two and name = :three and toolname = :four and state = PUBLISHED union"
+            + " select 'workflow' as type, id from workflow where sourcecontrol = :one and organization = :two and repository = :three and workflowname = :four and state = PUBLISHED"),
     @NamedNativeQuery(name = "Entry.getPublishedEntryByPathNullName", query =
-        "SELECT 'tool' as type, id from tool where registry = :one and namespace = :two and name = :three and toolname IS NULL and ispublished = TRUE union"
-            + " select 'workflow' as type, id from workflow where sourcecontrol = :one and organization = :two and repository = :three and workflowname IS NULL and ispublished = TRUE"),
+        "SELECT 'tool' as type, id from tool where registry = :one and namespace = :two and name = :three and toolname IS NULL and state = PUBLISHED union"
+            + " select 'workflow' as type, id from workflow where sourcecontrol = :one and organization = :two and repository = :three and workflowname IS NULL and state = PUBLISHED"),
     @NamedNativeQuery(name = "Entry.hostedWorkflowCount", query = "select (select count(*) from tool t, user_entry ue where mode = 'HOSTED' and ue.userid = :userid and ue.entryid = t.id) + (select count(*) from workflow w, user_entry ue where mode = 'HOSTED' and ue.userid = :userid and ue.entryid = w.id) as count;") })
 public abstract class Entry<S extends Entry, T extends Version> implements Comparable<Entry>, Aliasable {
 
@@ -141,9 +142,8 @@ public abstract class Entry<S extends Entry, T extends Version> implements Compa
     private String defaultVersion;
 
     @Column
-    @JsonProperty("is_published")
-    @ApiModelProperty(value = "Implementation specific visibility in this web service", position = 8)
-    private boolean isPublished;
+    @ApiModelProperty(value = "The state that the workflow is in", position = 8)
+    private State state = State.DRAFT;
 
     @Column
     @ApiModelProperty(value = "Implementation specific timestamp for last modified. "
@@ -346,13 +346,6 @@ public abstract class Entry<S extends Entry, T extends Version> implements Compa
     }
 
     /**
-     * @param isPublished will the repo be published
-     */
-    public void setIsPublished(boolean isPublished) {
-        this.isPublished = isPublished;
-    }
-
-    /**
      * @param lastModified the lastModified to set
      */
     public void setLastModified(Date lastModified) {
@@ -364,7 +357,15 @@ public abstract class Entry<S extends Entry, T extends Version> implements Compa
     }
 
     public boolean getIsPublished() {
-        return isPublished;
+        return Objects.equals(getState(), State.PUBLISHED);
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
     }
 
     @JsonProperty("last_modified")

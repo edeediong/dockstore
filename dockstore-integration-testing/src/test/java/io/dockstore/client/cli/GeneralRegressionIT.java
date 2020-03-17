@@ -103,7 +103,7 @@ public class GeneralRegressionIT extends BaseIT {
         c.setDefaultDockerfilePath("/Dockerfile");
         c.setDefaultCwlPath("/Dockstore.cwl");
         c.setRegistryString(Registry.DOCKER_HUB.getDockerPath());
-        c.setIsPublished(false);
+        c.setState(DockstoreTool.StateEnum.DRAFT);
         c.setNamespace("testPath");
         c.setToolname("test5");
         c.setPath("quay.io/dockstoretestuser2/dockstore-tool-imports");

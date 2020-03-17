@@ -93,7 +93,7 @@ public class GeneralIT extends BaseIT {
         c.setDefaultDockerfilePath("/Dockerfile");
         c.setDefaultCwlPath("/dockstore.cwl");
         c.setRegistryString(Registry.DOCKER_HUB.getDockerPath());
-        c.setIsPublished(false);
+        c.setState(DockstoreTool.StateEnum.DRAFT);
         c.setNamespace("testPath");
         c.setToolname("test5");
         c.setPath("quay.io/dockstoretestuser2/dockstore-tool-imports");
@@ -301,7 +301,7 @@ public class GeneralIT extends BaseIT {
         tool.setDefaultWdlPath("/Dockstore.wdl");
         tool.setDefaultCWLTestParameterFile("/test.cwl.json");
         tool.setDefaultWDLTestParameterFile("/test.wdl.json");
-        tool.setIsPublished(false);
+        tool.setState(DockstoreTool.StateEnum.DRAFT);
         tool.setGitUrl("git@github.com:dockstoretestuser2/quayandgithubalternate.git");
         tool.setToolname("alternate");
         tool.setPrivateAccess(false);
@@ -319,7 +319,7 @@ public class GeneralIT extends BaseIT {
         tool.setDefaultWdlPath("/Dockstore.wdl");
         tool.setDefaultCWLTestParameterFile("/test.cwl.json");
         tool.setDefaultWDLTestParameterFile("/test.wdl.json");
-        tool.setIsPublished(false);
+        tool.setState(DockstoreTool.StateEnum.DRAFT);
         tool.setGitUrl("git@bitbucket.org:dockstoretestuser2/dockstore-whalesay-2.git");
         tool.setToolname("alternate");
         tool.setPrivateAccess(false);

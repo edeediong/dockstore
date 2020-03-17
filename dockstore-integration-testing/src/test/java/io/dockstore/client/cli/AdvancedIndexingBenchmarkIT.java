@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import io.dockstore.common.BenchmarkTest;
 import io.dockstore.common.Registry;
+import io.dockstore.common.State;
 import io.dockstore.common.ToolTest;
 import io.dockstore.webservice.DockstoreWebserviceApplication;
 import io.dockstore.webservice.core.Token;
@@ -257,7 +258,7 @@ public class AdvancedIndexingBenchmarkIT extends BaseIT {
         tool.setRegistry(randomlyGeneratedRegistry());
         tool.setLastBuild(new Date());
         // Setting it always true because otherwise the build index won't do anything
-        tool.setIsPublished(true);
+        tool.setState(State.PUBLISHED);
         tool.setDefaultDockerfilePath(randomIdentifier());
         tool.setDefaultCwlPath(randomIdentifier());
         tool.setDefaultWdlPath(randomIdentifier());

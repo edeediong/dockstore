@@ -28,6 +28,7 @@ import io.dockstore.common.CommonTestUtilities;
 import io.dockstore.common.ConfidentialTest;
 import io.dockstore.common.DescriptorLanguage;
 import io.dockstore.common.SourceControl;
+import io.dockstore.common.State;
 import io.dockstore.webservice.core.BioWorkflow;
 import io.dockstore.webservice.core.Service;
 import io.dockstore.webservice.core.User;
@@ -412,7 +413,7 @@ public class ServiceIT extends BaseIT {
 
             Workflow testWorkflow = new BioWorkflow();
             testWorkflow.setDescription("foo workflow");
-            testWorkflow.setIsPublished(true);
+            testWorkflow.setState(State.PUBLISHED);
             testWorkflow.setSourceControl(SourceControl.GITHUB);
             testWorkflow.setDescriptorType(DescriptorLanguage.CWL);
             testWorkflow.setOrganization("shield");
@@ -420,7 +421,7 @@ public class ServiceIT extends BaseIT {
 
             Service testService = new Service();
             testService.setDescription("test service");
-            testService.setIsPublished(true);
+            testService.setState(State.PUBLISHED);
             testService.setSourceControl(SourceControl.GITHUB);
             testService.setDescriptorType(DescriptorLanguage.SERVICE);
             testService.setMode(WorkflowMode.DOCKSTORE_YML);
@@ -430,7 +431,7 @@ public class ServiceIT extends BaseIT {
 
             Service test2Service = new Service();
             test2Service.setDescription("test service");
-            test2Service.setIsPublished(true);
+            test2Service.setState(State.PUBLISHED);
             test2Service.setSourceControl(SourceControl.GITHUB);
             test2Service.setMode(WorkflowMode.DOCKSTORE_YML);
             test2Service.setDescriptorType(DescriptorLanguage.SERVICE);

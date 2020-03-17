@@ -220,7 +220,7 @@ public class SwaggerClientIT extends BaseIT {
         c.setDefaultDockerfilePath("/Dockerfile");
         c.setDefaultCwlPath("/Dockstore.cwl");
         c.setRegistryString(Registry.DOCKER_HUB.getDockerPath());
-        c.setIsPublished(true);
+        c.setState(DockstoreTool.StateEnum.PUBLISHED);
         c.setNamespace("seqware");
         c.setToolname("test5");
         c.setPrivateAccess(false);
@@ -434,7 +434,7 @@ public class SwaggerClientIT extends BaseIT {
         Ga4GhApi ga4GhApi = new Ga4GhApi(client);
         // register one more to give us something to look at
         DockstoreTool c = getContainer();
-        c.setIsPublished(true);
+        c.setState(DockstoreTool.StateEnum.PUBLISHED);
         final Tag tag = c.getWorkflowVersions().get(0);
         tag.setVerified(true);
         tag.setVerifiedSources(Arrays.asList("funky source"));

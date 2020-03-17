@@ -24,9 +24,12 @@ components:
         type: object
       type: object
     Checksum:
-      description: 'A production (immutable) tool version is required to have a hashcode.
-        Not required otherwise, but might be useful to detect changes. '
-      example: '[{checksum=ea2a5db69bd20a42976838790bc29294df3af02b, type=sha1}]'
+      description: A production (immutable) tool version is required to have a hashcode.
+        Not required otherwise, but might be useful to detect changes.  This exposes
+        the hashcode for specific image versions to verify that the container version
+        pulled is actually the version that was indexed by the registry.
+      example: '[{checksum=77af4d6b9913e693e8d0b4b294fa62ade6054e6b2f1ffb617ac955dd63fb0182,
+        type=sha256}]'
       properties:
         checksum:
           description: 'The hex-string encoded checksum for the data. '
@@ -214,7 +217,7 @@ components:
             $ref: '#/components/schemas/FileFormat'
           type: array
           uniqueItems: true
-        is_published:
+        isPublished:
           type: boolean
         labels:
           items:
@@ -244,6 +247,14 @@ components:
             $ref: '#/components/schemas/User'
           type: array
           uniqueItems: true
+        state:
+          enum:
+          - ARCHIVE
+          - DRAFT
+          - DELETE
+          - REDACTED
+          - PUBLISHED
+          type: string
         topicId:
           format: int64
           type: integer
@@ -1272,7 +1283,7 @@ components:
           uniqueItems: true
         isChecker:
           type: boolean
-        is_published:
+        isPublished:
           type: boolean
         labels:
           items:
@@ -1327,6 +1338,14 @@ components:
             $ref: '#/components/schemas/User'
           type: array
           uniqueItems: true
+        state:
+          enum:
+          - ARCHIVE
+          - DRAFT
+          - DELETE
+          - REDACTED
+          - PUBLISHED
+          type: string
         topicId:
           format: int64
           type: integer
@@ -1472,31 +1491,9 @@ info:
     url: https://github.com/dockstore/dockstore/blob/develop/LICENSE
   termsOfService: TBD
   title: Dockstore API
-  version: 1.9.0-alpha.4-SNAPSHOT
+  version: 1.9.0-alpha.5-SNAPSHOT
 openapi: 3.0.1
 paths:
-  /auth/tokens/orcid.org:
-    post:
-      description: Using OAuth code from ORCID, request and store tokens from ORCID
-        API
-      operationId: addOrcidToken
-      parameters:
-      - in: query
-        name: code
-        schema:
-          type: string
-      responses:
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Token'
-          description: default response
-      security:
-      - bearer: []
-      summary: Add a new orcid.org token
-      tags:
-      - tokens
   /api/ga4gh/v1/tools:
     get:
       description: This endpoint returns all tools available or a filtered subset
@@ -1818,8 +1815,6 @@ paths:
               schema:
                 type: string
           description: An elastic search result.
-      security:
-      - bearer: []
       summary: Search the index of tools
       tags:
       - extendedGA4GH
@@ -1834,8 +1829,6 @@ paths:
               schema:
                 type: integer
           description: An array of Tools of the input organization.
-      security:
-      - bearer: []
       summary: Update the index of tools
       tags:
       - extendedGA4GH
@@ -1944,12 +1937,30 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: The tool test cannot be found to annotate.
-      security:
-      - bearer: []
       summary: Annotate test JSON with information on whether it ran successfully
         on particular platforms plus metadata
       tags:
       - extendedGA4GH
+  /auth/tokens/orcid.org:
+    post:
+      description: Using OAuth code from ORCID, request and store tokens from ORCID
+        API
+      operationId: addOrcidToken
+      parameters:
+      - in: query
+        name: code
+        schema:
+          type: string
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+          description: default response
+      summary: Add a new orcid.org token
+      tags:
+      - tokens
   /entries/{id}/topic:
     post:
       description: Create a discourse topic for an entry.
@@ -1969,8 +1980,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Entry'
           description: default response
-      security:
-      - bearer: []
       tags:
       - entries
   /events:
@@ -2009,8 +2018,6 @@ paths:
                   $ref: '#/components/schemas/Event'
                 type: array
           description: default response
-      security:
-      - bearer: []
       summary: Get events based on filters.
       tags:
       - events
@@ -2032,8 +2039,6 @@ paths:
                   $ref: '#/components/schemas/ToolClass'
                 type: array
           description: A list of potential tool classes.
-      security:
-      - BEARER: []
       summary: List all tool types
       tags:
       - GA4GHV20
@@ -2124,8 +2129,6 @@ paths:
                   $ref: '#/components/schemas/Tool'
                 type: array
           description: An array of Tools that match the filter.
-      security:
-      - BEARER: []
       summary: List all tools
       tags:
       - GA4GHV20
@@ -2161,8 +2164,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: The tool can not be found.
-      security:
-      - BEARER: []
       summary: List one specific tool, acts as an anchor for self references
       tags:
       - GA4GHV20
@@ -2192,8 +2193,6 @@ paths:
                   $ref: '#/components/schemas/ToolVersion'
                 type: array
           description: An array of tool versions.
-      security:
-      - BEARER: []
       summary: List versions of a tool
       tags:
       - GA4GHV20
@@ -2236,8 +2235,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: The tool can not be found.
-      security:
-      - BEARER: []
       summary: List one specific tool version, acts as an anchor for self references
       tags:
       - GA4GHV20
@@ -2286,8 +2283,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: There are no container specifications for this tool.
-      security:
-      - BEARER: []
       summary: Get the container specification(s) for the specified image.
       tags:
       - GA4GHV20
@@ -2339,8 +2334,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: The tool descriptor can not be found.
-      security:
-      - BEARER: []
       summary: Get the tool descriptor for the specified tool
       tags:
       - GA4GHV20
@@ -2408,8 +2401,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: The tool can not be output in the specified type.
-      security:
-      - BEARER: []
       summary: Get additional tool descriptor files relative to the main file
       tags:
       - GA4GHV20
@@ -2464,8 +2455,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: The tool can not be output in the specified type.
-      security:
-      - BEARER: []
       summary: Get a list of objects that contain the relative path and file type
       tags:
       - GA4GHV20
@@ -2521,8 +2510,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: The tool can not be output in the specified type.
-      security:
-      - BEARER: []
       summary: Get a list of test JSONs
       tags:
       - GA4GHV20
@@ -2579,9 +2566,6 @@ paths:
       operationId: checkElasticSearch
       responses:
         default:
-          content:
-            text/html: {}
-            text/xml: {}
           description: default response
       summary: Successful response if elastic search is up and running
       tags:
@@ -2729,8 +2713,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Organization'
           description: default response
-      security:
-      - bearer: []
       summary: Create an organization.
       tags:
       - organizations
@@ -2760,8 +2742,6 @@ paths:
                   $ref: '#/components/schemas/Organization'
                 type: array
           description: default response
-      security:
-      - bearer: []
       summary: List all organizations.
       tags:
       - organizations
@@ -2810,10 +2790,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Aliasable'
+                $ref: '#/components/schemas/Collection'
           description: default response
-      security:
-      - bearer: []
       summary: Add aliases linked to a collection in Dockstore.
       tags:
       - organizations
@@ -2835,8 +2813,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Organization'
           description: default response
-      security:
-      - bearer: []
       summary: Retrieve an organization by name.
       tags:
       - organizations
@@ -2880,8 +2856,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Organization'
           description: default response
-      security:
-      - bearer: []
       summary: Retrieve an organization by ID.
       tags:
       - organizations
@@ -2911,8 +2885,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Organization'
           description: default response
-      security:
-      - bearer: []
       summary: Update an organization.
       tags:
       - organizations
@@ -2943,8 +2915,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Aliasable'
           description: default response
-      security:
-      - bearer: []
       summary: Add aliases linked to a listing in Dockstore.
       tags:
       - organizations
@@ -2967,8 +2937,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Organization'
           description: default response
-      security:
-      - bearer: []
       summary: Approve an organization.
       tags:
       - organizations
@@ -3000,8 +2968,6 @@ paths:
                   $ref: '#/components/schemas/Collection'
                 type: array
           description: default response
-      security:
-      - bearer: []
       summary: Retrieve all collections for an organization.
       tags:
       - organizations
@@ -3030,8 +2996,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Collection'
           description: default response
-      security:
-      - bearer: []
       summary: Create a collection in the given organization.
       tags:
       - organizations
@@ -3061,8 +3025,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Collection'
           description: default response
-      security:
-      - bearer: []
       summary: Retrieve a collection by ID.
       tags:
       - organizations
@@ -3099,8 +3061,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Collection'
           description: default response
-      security:
-      - bearer: []
       summary: Update a collection.
       tags:
       - organizations
@@ -3131,8 +3091,6 @@ paths:
               schema:
                 type: string
           description: default response
-      security:
-      - bearer: []
       summary: Retrieve a collection description by organization ID and collection
         ID.
       tags:
@@ -3169,8 +3127,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Collection'
           description: default response
-      security:
-      - bearer: []
       summary: Update a collection's description.
       tags:
       - organizations
@@ -3207,8 +3163,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Collection'
           description: default response
-      security:
-      - bearer: []
       summary: Delete an entry to a collection.
       tags:
       - organizations
@@ -3244,8 +3198,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Collection'
           description: default response
-      security:
-      - bearer: []
       summary: Add an entry to a collection.
       tags:
       - organizations
@@ -3269,8 +3221,6 @@ paths:
               schema:
                 type: string
           description: default response
-      security:
-      - bearer: []
       summary: Retrieve an organization description by organization ID.
       tags:
       - organizations
@@ -3300,8 +3250,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Organization'
           description: default response
-      security:
-      - bearer: []
       summary: Update an organization's description.
       tags:
       - organizations
@@ -3346,8 +3294,6 @@ paths:
                   $ref: '#/components/schemas/Event'
                 type: array
           description: default response
-      security:
-      - bearer: []
       summary: Retrieve all events for an organization.
       tags:
       - organizations
@@ -3372,11 +3318,7 @@ paths:
           type: boolean
       responses:
         default:
-          content:
-            application/json: {}
           description: default response
-      security:
-      - bearer: []
       summary: Accept or reject an organization invitation.
       tags:
       - organizations
@@ -3402,8 +3344,6 @@ paths:
                 type: array
                 uniqueItems: true
           description: default response
-      security:
-      - bearer: []
       summary: Retrieve all members for an organization.
       tags:
       - organizations
@@ -3426,8 +3366,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Organization'
           description: default response
-      security:
-      - bearer: []
       summary: Reject an organization.
       tags:
       - organizations
@@ -3451,8 +3389,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Organization'
           description: default response
-      security:
-      - bearer: []
       summary: Re-request an organization review.
       tags:
       - organizations
@@ -3477,11 +3413,7 @@ paths:
         required: true
       responses:
         default:
-          content:
-            application/json: {}
           description: default response
-      security:
-      - bearer: []
       summary: Star an organization.
       tags:
       - organizations
@@ -3524,11 +3456,7 @@ paths:
           type: integer
       responses:
         default:
-          content:
-            application/json: {}
           description: default response
-      security:
-      - bearer: []
       summary: Unstar an organization.
       tags:
       - organizations
@@ -3553,11 +3481,7 @@ paths:
           type: integer
       responses:
         default:
-          content:
-            application/json: {}
           description: default response
-      security:
-      - bearer: []
       summary: Remove a user from an organization.
       tags:
       - organizations
@@ -3595,8 +3519,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/OrganizationUser'
           description: default response
-      security:
-      - bearer: []
       summary: Update a user role in an organization.
       tags:
       - organizations
@@ -3641,8 +3563,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/OrganizationUser'
           description: default response
-      security:
-      - bearer: []
       summary: Add a user role to an organization.
       tags:
       - organizations
@@ -3681,8 +3601,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/OrganizationUser'
           description: default response
-      security:
-      - bearer: []
       summary: Add a user role to an organization.
       tags:
       - organizations
@@ -3710,8 +3628,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Collection'
           description: default response
-      security:
-      - bearer: []
       summary: Retrieve a collection by name.
       tags:
       - organizations
@@ -3815,8 +3731,6 @@ paths:
                   type: string
                 type: array
           description: default response
-      security:
-      - bearer: []
       tags:
       - users
   /users/registries/{gitRegistry}/organizations:
@@ -3846,8 +3760,6 @@ paths:
                 type: array
                 uniqueItems: true
           description: default response
-      security:
-      - bearer: []
       tags:
       - users
   /users/registries/{gitRegistry}/organizations/{organization}:
@@ -3882,8 +3794,6 @@ paths:
                   $ref: '#/components/schemas/Repository'
                 type: array
           description: default response
-      security:
-      - bearer: []
       tags:
       - users
   /users/user:
@@ -3923,8 +3833,6 @@ paths:
                   $ref: '#/components/schemas/EntryUpdateTime'
                 type: array
           description: default response
-      security:
-      - bearer: []
       tags:
       - users
   /users/users/organizations:
@@ -3953,8 +3861,6 @@ paths:
                   $ref: '#/components/schemas/OrganizationUpdateTime'
                 type: array
           description: default response
-      security:
-      - bearer: []
       tags:
       - users
   /users/{userId}:
@@ -3998,8 +3904,6 @@ paths:
       responses:
         "418":
           description: This code tells AWS Lambda not to retry.
-      security:
-      - bearer: []
       tags:
       - workflows
   /workflows/hostedEntry/{entryId}:
@@ -4030,8 +3934,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Workflow'
           description: successful operation
-      security:
-      - bearer: []
       summary: Creates a new revision of a hosted workflow from a zip
       tags:
       - hosted
@@ -4065,11 +3967,7 @@ paths:
           type: string
       responses:
         default:
-          content:
-            application/json: {}
           description: default response
-      security:
-      - bearer: []
       tags:
       - workflows
     post:
@@ -4107,26 +4005,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/BioWorkflow'
           description: default response
-      security:
-      - bearer: []
       tags:
       - workflows
 servers:
 - description: Current server when hosted on AWS
   url: /api
-  variables: {}
 - description: When working locally
   url: /
-  variables: {}
 - description: Production server
   url: https://dockstore.org/api
-  variables: {}
 - description: Staging server
   url: https://staging.dockstore.org/api
-  variables: {}
 - description: Nightly build server
   url: https://dev.dockstore.net/api
-  variables: {}
 tags:
 - description: Create, update list aliases for accessing entries
   name: aliases

@@ -5,7 +5,7 @@ info:
     \ of Docker images and associated metadata such as CWL documents and Dockerfiles\
     \ used to build those images. Explore swagger.json for a Swagger 2.0 description\
     \ of our API and explore openapi.yaml for OpenAPI 3.0 descriptions."
-  version: "1.9.0-alpha.4-SNAPSHOT"
+  version: "1.9.0-alpha.5-SNAPSHOT"
   title: "Dockstore API"
   termsOfService: "TBD"
   contact:
@@ -6368,6 +6368,8 @@ definitions:
         uniqueItems: true
         items:
           $ref: "#/definitions/FileFormat"
+      isPublished:
+        type: "boolean"
       last_modified_date:
         type: "string"
         format: "date-time"
@@ -6428,10 +6430,16 @@ definitions:
         type: "string"
         position: 7
         description: "This is the default version of the entry"
-      is_published:
-        type: "boolean"
+      state:
+        type: "string"
         position: 8
-        description: "Implementation specific visibility in this web service"
+        description: "The state that the workflow is in"
+        enum:
+        - "ARCHIVE"
+        - "DRAFT"
+        - "DELETE"
+        - "REDACTED"
+        - "PUBLISHED"
       last_modified:
         type: "integer"
         format: "int32"
@@ -6604,6 +6612,8 @@ definitions:
         uniqueItems: true
         items:
           $ref: "#/definitions/FileFormat"
+      isPublished:
+        type: "boolean"
       last_modified_date:
         type: "string"
         format: "date-time"
@@ -6664,10 +6674,16 @@ definitions:
         type: "string"
         position: 7
         description: "This is the default version of the entry"
-      is_published:
-        type: "boolean"
+      state:
+        type: "string"
         position: 8
-        description: "Implementation specific visibility in this web service"
+        description: "The state that the workflow is in"
+        enum:
+        - "ARCHIVE"
+        - "DRAFT"
+        - "DELETE"
+        - "REDACTED"
+        - "PUBLISHED"
       last_modified:
         type: "integer"
         format: "int32"
@@ -8067,6 +8083,8 @@ definitions:
           $ref: "#/definitions/FileFormat"
       isChecker:
         type: "boolean"
+      isPublished:
+        type: "boolean"
       last_modified_date:
         type: "string"
         format: "date-time"
@@ -8124,10 +8142,16 @@ definitions:
         type: "string"
         position: 7
         description: "This is the default version of the entry"
-      is_published:
-        type: "boolean"
+      state:
+        type: "string"
         position: 8
-        description: "Implementation specific visibility in this web service"
+        description: "The state that the workflow is in"
+        enum:
+        - "ARCHIVE"
+        - "DRAFT"
+        - "DELETE"
+        - "REDACTED"
+        - "PUBLISHED"
       last_modified:
         type: "integer"
         format: "int32"

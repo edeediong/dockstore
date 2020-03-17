@@ -80,7 +80,7 @@ public class ValidationIT extends BaseIT {
         c.setDefaultDockerfilePath("/Dockerfile");
         c.setDefaultCwlPath("/validTool.cwl");
         c.setRegistryString(Registry.DOCKER_HUB.getDockerPath());
-        c.setIsPublished(false);
+        c.setState(DockstoreTool.StateEnum.DRAFT);
         c.setNamespace("DockstoreTestUser2");
         c.setToolname("test5");
         c.setPath("registry.hub.docker.com/dockstoretestuser2/dockstore-tool-validation");

@@ -142,29 +142,29 @@ public class CheckerWorkflowIT extends BaseIT {
         assertEquals("The checker workflow should have the correct path information, there are " + count3, 1, count3);
 
         // Publish workflow
-        final long count4 = testingPostgres.runSelectStatement("select count(*) from workflow where ispublished = true", long.class);
+        final long count4 = testingPostgres.runSelectStatement("select count(*) from workflow where state = PUBLISHED", long.class);
         assertEquals("No workflows should be published, there are " + count4, 0, count4);
 
-        final long count5 = testingPostgres.runSelectStatement("select count(*) from tool where ispublished = true", long.class);
+        final long count5 = testingPostgres.runSelectStatement("select count(*) from tool where state = PUBLISHED", long.class);
         assertEquals("No tools should be published, there are " + count5, 0, count5);
 
         containersApi.publish(githubTool.getId(), publishRequest);
 
         // Checker workflow should publish
-        final long count6 = testingPostgres.runSelectStatement("select count(*) from workflow where ispublished = true", long.class);
+        final long count6 = testingPostgres.runSelectStatement("select count(*) from workflow where state = PUBLISHED", long.class);
         assertEquals("The checker workflow should be published, there are " + count6, 1, count6);
 
-        final long count7 = testingPostgres.runSelectStatement("select count(*) from tool where ispublished = true", long.class);
+        final long count7 = testingPostgres.runSelectStatement("select count(*) from tool where state = PUBLISHED", long.class);
         assertEquals("the tool should be published, there are " + count7, 1, count7);
 
         // Unpublish workflow
         containersApi.publish(githubTool.getId(), unpublishRequest);
 
         // Checker workflow should unpublish
-        final long count8 = testingPostgres.runSelectStatement("select count(*) from workflow where ispublished = true", long.class);
+        final long count8 = testingPostgres.runSelectStatement("select count(*) from workflow where state = PUBLISHED", long.class);
         assertEquals("Checker workflow should not be published, there are " + count8, 0, count8);
 
-        final long count9 = testingPostgres.runSelectStatement("select count(*) from tool where ispublished = true", long.class);
+        final long count9 = testingPostgres.runSelectStatement("select count(*) from tool where state = PUBLISHED", long.class);
         assertEquals("the tool should not be published, there are " + count9, 0, count9);
 
         // Should not be able to directly publish the checker
@@ -317,12 +317,12 @@ public class CheckerWorkflowIT extends BaseIT {
         assertEquals("The workflow should have the correct path, there are " + count5, 1, count5);
 
         // Publish workflow
-        final long count6 = testingPostgres.runSelectStatement("select count(*) from workflow where ispublished = true", long.class);
+        final long count6 = testingPostgres.runSelectStatement("select count(*) from workflow where state = PUBLISHED", long.class);
         assertEquals("No workflows should be published, there are " + count6, 0, count6);
         workflowApi.publish(githubWorkflow.getId(), publishRequest);
 
         // Checker workflow should publish
-        final long count7 = testingPostgres.runSelectStatement("select count(*) from workflow where ispublished = true", long.class);
+        final long count7 = testingPostgres.runSelectStatement("select count(*) from workflow where state = PUBLISHED", long.class);
         assertEquals("Two workflows should be published (one being the checker), there are " + count7, 2, count7);
 
         // Should still be able to download zip for first version
@@ -332,7 +332,7 @@ public class CheckerWorkflowIT extends BaseIT {
         workflowApi.publish(githubWorkflow.getId(), unpublishRequest);
 
         // Checker workflow should unpublish
-        final long count8 = testingPostgres.runSelectStatement("select count(*) from workflow where ispublished = true", long.class);
+        final long count8 = testingPostgres.runSelectStatement("select count(*) from workflow where state = PUBLISHED", long.class);
         assertEquals("No workflows should be published, there are " + count8, 0, count8);
 
         // Should not be able to directly publish the checker
@@ -401,19 +401,19 @@ public class CheckerWorkflowIT extends BaseIT {
         assertEquals("The workflow should have the correct path, there are " + count5, 1, count5);
 
         // Publish workflow
-        final long count6 = testingPostgres.runSelectStatement("select count(*) from workflow where ispublished = true", long.class);
+        final long count6 = testingPostgres.runSelectStatement("select count(*) from workflow where state = PUBLISHED", long.class);
         assertEquals("No workflows should be published, there are " + count6, 0, count6);
         workflowApi.publish(githubWorkflow.getId(), publishRequest);
 
         // Checker workflow should publish
-        final long count7 = testingPostgres.runSelectStatement("select count(*) from workflow where ispublished = true", long.class);
+        final long count7 = testingPostgres.runSelectStatement("select count(*) from workflow where state = PUBLISHED", long.class);
         assertEquals("Two workflows should be published (one being the checker), there are " + count7, 2, count7);
 
         // Unpublish workflow
         workflowApi.publish(githubWorkflow.getId(), unpublishRequest);
 
         // Checker workflow should unpublish
-        final long count8 = testingPostgres.runSelectStatement("select count(*) from workflow where ispublished = true", long.class);
+        final long count8 = testingPostgres.runSelectStatement("select count(*) from workflow where state = PUBLISHED", long.class);
         assertEquals("No workflows should be published, there are " + count8, 0, count8);
     }
 

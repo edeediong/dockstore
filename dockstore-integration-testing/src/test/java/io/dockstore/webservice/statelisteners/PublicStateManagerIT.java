@@ -25,6 +25,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.dockstore.common.CommonTestUtilities;
+import io.dockstore.common.State;
 import io.dockstore.webservice.DockstoreWebserviceConfiguration;
 import io.dockstore.webservice.core.BioWorkflow;
 import io.dockstore.webservice.core.Entry;
@@ -107,7 +108,7 @@ public class PublicStateManagerIT {
         tool.setRegistry("potato");
         tool.addWorkflowVersion(tag);
         tool.setDefaultVersion("master");
-        tool.setIsPublished(true);
+        tool.setState(State.PUBLISHED);
         return tool;
     }
 

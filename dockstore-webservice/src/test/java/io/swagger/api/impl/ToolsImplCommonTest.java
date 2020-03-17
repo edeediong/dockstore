@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dockstore.common.DescriptorLanguage;
 import io.dockstore.common.Registry;
 import io.dockstore.common.SourceControl;
+import io.dockstore.common.State;
 import io.dockstore.webservice.DockstoreWebserviceConfiguration;
 import io.dockstore.webservice.core.BioWorkflow;
 import io.dockstore.webservice.core.SourceFile;
@@ -319,7 +320,7 @@ public class ToolsImplCommonTest {
         workflow.setUsers(Collections.emptySortedSet());
         workflow.setEmail(null);
         workflow.setDefaultVersion(reference2);
-        workflow.setIsPublished(true);
+        workflow.setState(State.PUBLISHED);
         workflow.setLastModified(null);
         workflow.setLastUpdated(null);
         workflow.setGitUrl("git@github.com:ICGC-TCGA-PanCancer/wdl-pcawg-sanger-cgp-workflow.git");

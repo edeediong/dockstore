@@ -59,6 +59,7 @@ import com.google.common.base.Strings;
 import io.dockstore.common.DescriptorLanguage;
 import io.dockstore.common.DescriptorLanguage.FileType;
 import io.dockstore.common.SourceControl;
+import io.dockstore.common.State;
 import io.dockstore.webservice.CustomWebApplicationException;
 import io.dockstore.webservice.DockstoreWebserviceConfiguration;
 import io.dockstore.webservice.api.PublishRequest;
@@ -752,17 +753,17 @@ public class WorkflowResource extends AbstractWorkflowResource<Workflow>
             }
 
             if (validTag && (!workflow.getGitUrl().isEmpty() || Objects.equals(workflow.getMode(), WorkflowMode.HOSTED))) {
-                workflow.setIsPublished(true);
+                workflow.setState(State.PUBLISHED);
                 if (checker != null) {
-                    checker.setIsPublished(true);
+                    checker.setState(State.PUBLISHED);
                 }
             } else {
                 throw new CustomWebApplicationException("Repository does not meet requirements to publish.", HttpStatus.SC_BAD_REQUEST);
             }
         } else {
-            workflow.setIsPublished(false);
+            workflow.setState(State.DRAFT);
             if (checker != null) {
-                checker.setIsPublished(false);
+                checker.setState(State.DRAFT);
             }
         }
 
@@ -1518,6 +1519,7 @@ public class WorkflowResource extends AbstractWorkflowResource<Workflow>
         String repository;
         SourceControl sourceControl;
         boolean isPublished;
+        State state = State.DRAFT;
         String gitUrl;
         Date lastUpdated;
         String workflowName;
@@ -1572,7 +1574,7 @@ public class WorkflowResource extends AbstractWorkflowResource<Workflow>
             organization = workflow.getOrganization();
             repository = workflow.getRepository();
             sourceControl = workflow.getSourceControl();
-            isPublished = workflow.getIsPublished();
+            state = workflow.getState();
             gitUrl = workflow.getGitUrl();
             lastUpdated = workflow.getLastUpdated();
 
@@ -1600,7 +1602,7 @@ public class WorkflowResource extends AbstractWorkflowResource<Workflow>
         checkerWorkflow.setOrganization(organization);
         checkerWorkflow.setRepository(repository);
         checkerWorkflow.setSourceControl(sourceControl);
-        checkerWorkflow.setIsPublished(isPublished);
+        checkerWorkflow.setState(state);
         checkerWorkflow.setGitUrl(gitUrl);
         checkerWorkflow.setLastUpdated(lastUpdated);
         checkerWorkflow.setWorkflowName(workflowName);

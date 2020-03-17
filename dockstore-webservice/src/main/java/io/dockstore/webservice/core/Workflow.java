@@ -174,7 +174,7 @@ public abstract class Workflow extends Entry<Workflow, WorkflowVersion> {
      */
     @Deprecated
     public void copyWorkflow(Workflow targetWorkflow) {
-        targetWorkflow.setIsPublished(getIsPublished());
+        targetWorkflow.setState(getState());
         targetWorkflow.setWorkflowName(getWorkflowName());
         targetWorkflow.setAuthor(getAuthor());
         targetWorkflow.setEmail(getEmail());

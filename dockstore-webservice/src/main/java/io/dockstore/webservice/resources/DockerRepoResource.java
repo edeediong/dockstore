@@ -50,6 +50,7 @@ import com.google.common.base.Strings;
 import io.dockstore.common.DescriptorLanguage;
 import io.dockstore.common.DescriptorLanguage.FileType;
 import io.dockstore.common.Registry;
+import io.dockstore.common.State;
 import io.dockstore.webservice.CustomWebApplicationException;
 import io.dockstore.webservice.DockstoreWebserviceConfiguration;
 import io.dockstore.webservice.api.PublishRequest;
@@ -634,17 +635,17 @@ public class DockerRepoResource
 
             // Can publish a tool IF it has at least one valid tag (or is manual) and a git url
             if (validTag && (!tool.getGitUrl().isEmpty()) || Objects.equals(tool.getMode(), ToolMode.HOSTED)) {
-                tool.setIsPublished(true);
+                tool.setState(State.PUBLISHED);
                 if (checker != null) {
-                    checker.setIsPublished(true);
+                    checker.setState(State.PUBLISHED);
                 }
             } else {
                 throw new CustomWebApplicationException("Repository does not meet requirements to publish.", HttpStatus.SC_BAD_REQUEST);
             }
         } else {
-            tool.setIsPublished(false);
+            tool.setState(State.DRAFT);
             if (checker != null) {
-                checker.setIsPublished(false);
+                checker.setState(State.DRAFT);
             }
         }
 
