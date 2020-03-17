@@ -91,11 +91,11 @@ import org.hibernate.annotations.UpdateTimestamp;
         "SELECT 'tool' as type, id from tool where registry = :one and namespace = :two and name = :three and toolname IS NULL union"
             + " select 'workflow' as type, id from workflow where sourcecontrol = :one and organization = :two and repository = :three and workflowname IS NULL"),
     @NamedNativeQuery(name = "Entry.getPublishedEntryByPath", query =
-        "SELECT 'tool' as type, id from tool where registry = :one and namespace = :two and name = :three and toolname = :four and state = PUBLISHED union"
-            + " select 'workflow' as type, id from workflow where sourcecontrol = :one and organization = :two and repository = :three and workflowname = :four and state = PUBLISHED"),
+        "SELECT 'tool' as type, id from tool where registry = :one and namespace = :two and name = :three and toolname = :four and state = 'PUBLISHED' union"
+            + " select 'workflow' as type, id from workflow where sourcecontrol = :one and organization = :two and repository = :three and workflowname = :four and state = 'PUBLISHED'"),
     @NamedNativeQuery(name = "Entry.getPublishedEntryByPathNullName", query =
-        "SELECT 'tool' as type, id from tool where registry = :one and namespace = :two and name = :three and toolname IS NULL and state = PUBLISHED union"
-            + " select 'workflow' as type, id from workflow where sourcecontrol = :one and organization = :two and repository = :three and workflowname IS NULL and state = PUBLISHED"),
+        "SELECT 'tool' as type, id from tool where registry = :one and namespace = :two and name = :three and toolname IS NULL and state = 'PUBLISHED' union"
+            + " select 'workflow' as type, id from workflow where sourcecontrol = :one and organization = :two and repository = :three and workflowname IS NULL and state = 'PUBLISHED'"),
     @NamedNativeQuery(name = "Entry.hostedWorkflowCount", query = "select (select count(*) from tool t, user_entry ue where mode = 'HOSTED' and ue.userid = :userid and ue.entryid = t.id) + (select count(*) from workflow w, user_entry ue where mode = 'HOSTED' and ue.userid = :userid and ue.entryid = w.id) as count;") })
 public abstract class Entry<S extends Entry, T extends Version> implements Comparable<Entry>, Aliasable {
 
