@@ -158,7 +158,7 @@ public class GeneralIT extends BaseIT {
     @Test
     public void testListAvailableContainers() {
 
-        final long count = testingPostgres.runSelectStatement("select count(*) from tool where ispublished='f'", long.class);
+        final long count = testingPostgres.runSelectStatement("select count(*) from tool where state='DRAFT'", long.class);
         assertEquals("there should be 4 entries, there are " + count, 4, count);
     }
 

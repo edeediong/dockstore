@@ -68,19 +68,19 @@ import org.hibernate.annotations.Check;
 @NamedQueries({
         @NamedQuery(name = "io.dockstore.webservice.core.Tool.getByAlias", query = "SELECT e from Tool e JOIN e.aliases a WHERE KEY(a) IN :alias"),
         @NamedQuery(name = "io.dockstore.webservice.core.Tool.findByNameAndNamespaceAndRegistry", query = "SELECT c FROM Tool c WHERE c.name = :name AND c.namespace = :namespace AND c.registry = :registry"),
-        @NamedQuery(name = "io.dockstore.webservice.core.Tool.findPublishedById", query = "SELECT c FROM Tool c WHERE c.id = :id AND c.isPublished = true"),
+        @NamedQuery(name = "io.dockstore.webservice.core.Tool.findPublishedById", query = "SELECT c FROM Tool c WHERE c.id = :id AND c.state = 'PUBLISHED''"),
         @NamedQuery(name = "io.dockstore.webservice.core.Tool.countAllPublished", query = "SELECT COUNT(c.id)" + Tool.PUBLISHED_QUERY),
         @NamedQuery(name = "io.dockstore.webservice.core.Tool.findAllPublished", query = "SELECT c" + Tool.PUBLISHED_QUERY + "ORDER BY size(c.starredUsers) DESC"),
         @NamedQuery(name = "io.dockstore.webservice.core.Tool.findAllPublishedPaths", query = "SELECT new io.dockstore.webservice.core.database.ToolPath(c.registry, c.namespace, c.name, c.toolname)" + Tool.PUBLISHED_QUERY),
         @NamedQuery(name = "io.dockstore.webservice.core.Tool.findAllPublishedPathsOrderByDbupdatedate", query = "SELECT new io.dockstore.webservice.core.database.RSSToolPath(c.registry, c.namespace, c.name, c.toolname, c.lastUpdated, c.description)" + Tool.PUBLISHED_QUERY + "and c.dbUpdateDate is not null ORDER BY c.dbUpdateDate desc"),
         @NamedQuery(name = "io.dockstore.webservice.core.Tool.findByMode", query = "SELECT c FROM Tool c WHERE c.mode = :mode"),
-        @NamedQuery(name = "io.dockstore.webservice.core.Tool.findPublishedByNamespace", query = "SELECT c FROM Tool c WHERE lower(c.namespace) = lower(:namespace) AND c.isPublished = true ORDER BY gitUrl"),
+        @NamedQuery(name = "io.dockstore.webservice.core.Tool.findPublishedByNamespace", query = "SELECT c FROM Tool c WHERE lower(c.namespace) = lower(:namespace) AND c.state = 'PUBLISHED' ORDER BY gitUrl"),
         @NamedQuery(name = "io.dockstore.webservice.core.Tool.findByPath", query = "SELECT c FROM Tool c WHERE c.registry = :registry AND c.namespace = :namespace AND c.name = :name"),
-        @NamedQuery(name = "io.dockstore.webservice.core.Tool.findPublishedByPath", query = "SELECT c FROM Tool c WHERE c.registry = :registry AND c.namespace = :namespace AND c.name = :name AND c.isPublished = true"),
+        @NamedQuery(name = "io.dockstore.webservice.core.Tool.findPublishedByPath", query = "SELECT c FROM Tool c WHERE c.registry = :registry AND c.namespace = :namespace AND c.name = :name AND c.state = 'PUBLISHED'"),
         @NamedQuery(name = "io.dockstore.webservice.core.Tool.findByToolPath", query = "SELECT c FROM Tool c WHERE c.registry = :registry AND c.namespace = :namespace AND c.name = :name AND c.toolname = :toolname"),
-        @NamedQuery(name = "io.dockstore.webservice.core.Tool.findPublishedByToolPath", query = "SELECT c FROM Tool c WHERE c.registry = :registry AND c.namespace = :namespace AND c.name = :name AND c.toolname = :toolname AND c.isPublished = true"),
+        @NamedQuery(name = "io.dockstore.webservice.core.Tool.findPublishedByToolPath", query = "SELECT c FROM Tool c WHERE c.registry = :registry AND c.namespace = :namespace AND c.name = :name AND c.toolname = :toolname AND c.state = 'PUBLISHED'"),
         @NamedQuery(name = "io.dockstore.webservice.core.Tool.findByToolPathNullToolName", query = "SELECT c FROM Tool c WHERE c.registry = :registry AND c.namespace = :namespace AND c.name = :name AND c.toolname IS NULL"),
-        @NamedQuery(name = "io.dockstore.webservice.core.Tool.findPublishedByToolPathNullToolName", query = "SELECT c FROM Tool c WHERE c.registry = :registry AND c.namespace = :namespace AND c.name = :name AND c.toolname IS NULL AND c.isPublished = true"),
+        @NamedQuery(name = "io.dockstore.webservice.core.Tool.findPublishedByToolPathNullToolName", query = "SELECT c FROM Tool c WHERE c.registry = :registry AND c.namespace = :namespace AND c.name = :name AND c.toolname IS NULL AND c.state = 'PUBLISHED'"),
         @NamedQuery(name = "io.dockstore.webservice.core.Tool.getEntryLiteByUserId", query = "SELECT new io.dockstore.webservice.core.database.EntryLite$EntryLiteTool(t.registry, t.namespace, t.name, t.toolname, t.dbUpdateDate as entryUpdated, MAX(v.dbUpdateDate) as versionUpdated) "
                 + "FROM Tool t LEFT JOIN t.workflowVersions v "
                 + "WHERE t.id in (SELECT ue.id FROM User u INNER JOIN u.entries ue where u.id = :userId) "
@@ -92,7 +92,7 @@ import org.hibernate.annotations.Check;
 @SuppressWarnings("checkstyle:magicnumber")
 public class Tool extends Entry<Tool, Tag> {
 
-    static final String PUBLISHED_QUERY = " FROM Tool c WHERE c.isPublished = true ";
+    static final String PUBLISHED_QUERY = " FROM Tool c WHERE c.state = 'PUBLISHED' ";
 
     @Column(nullable = false, columnDefinition = "Text default 'AUTO_DETECT_QUAY_TAGS_AUTOMATED_BUILDS'")
     @Enumerated(EnumType.STRING)

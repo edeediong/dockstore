@@ -571,14 +571,14 @@ public class BasicIT extends BaseIT {
         tool = toolsApi.publish(tool.getId(), SwaggerUtility.createPublishRequest(true));
 
         final long count = testingPostgres
-            .runSelectStatement("select count(*) from tool where name = '" + toolPath.split("/")[2] + "' and ispublished='t'", long.class);
+            .runSelectStatement("select count(*) from tool where name = '" + toolPath.split("/")[2] + "' and state='PUBLISHED'", long.class);
         Assert.assertEquals("there should be 1 registered", 1, count);
 
         // Unpublish
         tool = toolsApi.publish(tool.getId(), SwaggerUtility.createPublishRequest(false));
 
         final long count2 = testingPostgres
-            .runSelectStatement("select count(*) from tool where name = '" + toolPath.split("/")[2] + "' and ispublished='t'", long.class);
+            .runSelectStatement("select count(*) from tool where name = '" + toolPath.split("/")[2] + "' and state='PUBLISHED'", long.class);
         Assert.assertEquals("there should be 0 registered", 0, count2);
     }
 
@@ -604,14 +604,14 @@ public class BasicIT extends BaseIT {
             "/testDir/Dockstore.wdl", "/testDir/Dockerfile", DockstoreTool.RegistryEnum.QUAY_IO, "master", "latest", true);
 
         final long count = testingPostgres
-            .runSelectStatement("select count(*) from tool where toolname = 'alternate' and ispublished='t'", long.class);
+            .runSelectStatement("select count(*) from tool where toolname = 'alternate' and state='PUBLISHED'", long.class);
 
         Assert.assertEquals("there should be 1 entries, there are " + count, 1, count);
 
         // Unpublish
         tool = toolsApi.publish(tool.getId(), SwaggerUtility.createPublishRequest(false));
         final long count2 = testingPostgres
-            .runSelectStatement("select count(*) from tool where toolname = 'alternate' and ispublished='t'", long.class);
+            .runSelectStatement("select count(*) from tool where toolname = 'alternate' and state='PUBLISHED'", long.class);
 
         Assert.assertEquals("there should be 0 entries, there are " + count2, 0, count2);
     }
@@ -652,7 +652,7 @@ public class BasicIT extends BaseIT {
         tool = toolsApi.refresh(tool.getId());
         tool = toolsApi.publish(tool.getId(), SwaggerUtility.createPublishRequest(true));
         final long count = testingPostgres.runSelectStatement("select count(*) from tool where registry = '" + Registry.QUAY_IO.getDockerPath()
-            + "' and namespace = 'dockstoretestuser' and name = 'quayandgithub' and ispublished = 't'", long.class);
+            + "' and namespace = 'dockstoretestuser' and name = 'quayandgithub' and state = 'PUBLISHED'", long.class);
         Assert.assertEquals("the given entry should be published", 1, count);
     }
 
@@ -676,14 +676,14 @@ public class BasicIT extends BaseIT {
             "/Dockerfile", DockstoreTool.RegistryEnum.DOCKER_HUB, "master", "latest", true);
 
         final long count = testingPostgres
-            .runSelectStatement("select count(*) from tool where toolname = 'regular' and ispublished='t'", long.class);
+            .runSelectStatement("select count(*) from tool where toolname = 'regular' and state='PUBLISHED'", long.class);
 
         Assert.assertEquals("there should be 1 entries", 1, count);
 
         // Unpublish
         toolsApi.publish(tool.getId(), SwaggerUtility.createPublishRequest(false));
         final long count2 = testingPostgres
-            .runSelectStatement("select count(*) from tool where toolname = 'regular' and ispublished='t'", long.class);
+            .runSelectStatement("select count(*) from tool where toolname = 'regular' and state='PUBLISHED'", long.class);
 
         Assert.assertEquals("there should be 0 entries", 0, count2);
     }
@@ -710,14 +710,14 @@ public class BasicIT extends BaseIT {
             "/testDir/Dockstore.wdl", "/testDir/Dockerfile", DockstoreTool.RegistryEnum.DOCKER_HUB, "master", "latest", true);
 
         final long count = testingPostgres
-            .runSelectStatement("select count(*) from tool where toolname = 'alternate' and ispublished='t'", long.class);
+            .runSelectStatement("select count(*) from tool where toolname = 'alternate' and state='PUBLISHED'", long.class);
 
         Assert.assertEquals("there should be 1 entries", 1, count);
 
         // Unpublish
         toolsApi.publish(tool.getId(), SwaggerUtility.createPublishRequest(false));
         final long count2 = testingPostgres
-            .runSelectStatement("select count(*) from tool where toolname = 'alternate' and ispublished='t'", long.class);
+            .runSelectStatement("select count(*) from tool where toolname = 'alternate' and state='PUBLISHED'", long.class);
 
         Assert.assertEquals("there should be 0 entries", 0, count2);
     }
@@ -745,7 +745,7 @@ public class BasicIT extends BaseIT {
             "/Dockerfile", DockstoreTool.RegistryEnum.DOCKER_HUB, "master", "latest", true);
 
         final long count = testingPostgres
-            .runSelectStatement("select count(*) from tool where toolname = 'regular' and ispublished='t'", long.class);
+            .runSelectStatement("select count(*) from tool where toolname = 'regular' and state='PUBLISHED'", long.class);
 
         Assert.assertEquals("there should be 1 entry", 1, count);
 
@@ -754,18 +754,18 @@ public class BasicIT extends BaseIT {
 
         // Unpublish the duplicate entry
         final long count2 = testingPostgres
-            .runSelectStatement("select count(*) from tool where toolname like 'regular%' and ispublished='t'", long.class);
+            .runSelectStatement("select count(*) from tool where toolname like 'regular%' and state='PUBLISHED'", long.class);
         Assert.assertEquals("there should be 2 entries", 2, count2);
         toolsApi.publish(tool.getId(), SwaggerUtility.createPublishRequest(false));
 
         final long count3 = testingPostgres
-            .runSelectStatement("select count(*) from tool where toolname = 'regular2' and ispublished='t'", long.class);
+            .runSelectStatement("select count(*) from tool where toolname = 'regular2' and state='PUBLISHED'", long.class);
 
         Assert.assertEquals("there should be 1 entry", 1, count3);
 
         toolsApi.publish(duplicateTool.getId(), SwaggerUtility.createPublishRequest(false));
         final long count4 = testingPostgres
-            .runSelectStatement("select count(*) from tool where toolname like 'regular%' and ispublished='t'", long.class);
+            .runSelectStatement("select count(*) from tool where toolname like 'regular%' and state='PUBLISHED'", long.class);
 
         Assert.assertEquals("there should be 0 entries", 0, count4);
     }
@@ -1058,7 +1058,7 @@ public class BasicIT extends BaseIT {
 
         // The tool should be private, published and have the correct email
         final long count = testingPostgres.runSelectStatement(
-            "select count(*) from tool where ispublished='true' and privateaccess='true' and toolmaintaineremail='testemail@domain.com'",
+            "select count(*) from tool where state='PUBLISHED' and privateaccess='true' and toolmaintaineremail='testemail@domain.com'",
             long.class);
         Assert.assertEquals("one tool should be private and published, there are " + count, 1, count);
 
@@ -1109,7 +1109,7 @@ public class BasicIT extends BaseIT {
 
         // The tool should be private, published and have the correct email
         final long count = testingPostgres.runSelectStatement(
-            "select count(*) from tool where ispublished='true' and privateaccess='true' and toolmaintaineremail='testemail@domain.com'",
+            "select count(*) from tool where state='PUBLISHED' and privateaccess='true' and toolmaintaineremail='testemail@domain.com'",
             long.class);
         Assert.assertEquals("one tool should be private and published, there are " + count, 1, count);
 
@@ -1119,7 +1119,7 @@ public class BasicIT extends BaseIT {
 
         // Check that the tool is no longer private
         final long count2 = testingPostgres.runSelectStatement(
-            "select count(*) from tool where ispublished='true' and privateaccess='true' and toolmaintaineremail='testemail@domain.com'",
+            "select count(*) from tool where state='PUBLISHED' and privateaccess='true' and toolmaintaineremail='testemail@domain.com'",
             long.class);
         Assert.assertEquals("no tool should be private, but there are " + count2, 0, count2);
 
@@ -1147,7 +1147,7 @@ public class BasicIT extends BaseIT {
 
         // The tool should be private, published and not have a maintainer email
         final long count = testingPostgres
-            .runSelectStatement("select count(*) from tool where ispublished='true' and privateaccess='true' and toolmaintaineremail=''",
+            .runSelectStatement("select count(*) from tool where state='PUBLISHED' and privateaccess='true' and toolmaintaineremail=''",
                 long.class);
         Assert.assertEquals("one tool should be private and published, there are " + count, 1, count);
 
@@ -1158,7 +1158,7 @@ public class BasicIT extends BaseIT {
 
         // Check that the tool is no longer private
         final long count2 = testingPostgres.runSelectStatement(
-            "select count(*) from tool where ispublished='true' and privateaccess='true' and toolmaintaineremail='testemail@domain.com'",
+            "select count(*) from tool where state='PUBLISHED' and privateaccess='true' and toolmaintaineremail='testemail@domain.com'",
             long.class);
         Assert.assertEquals("no tool should be private, but there are " + count2, 0, count2);
 
@@ -1170,7 +1170,7 @@ public class BasicIT extends BaseIT {
 
         // Check that the tool is no longer private
         final long count3 = testingPostgres.runSelectStatement(
-            "select count(*) from tool where ispublished='true' and privateaccess='true' and toolmaintaineremail='testemail2@domain.com'",
+            "select count(*) from tool where state='PUBLISHED' and privateaccess='true' and toolmaintaineremail='testemail2@domain.com'",
             long.class);
         Assert.assertEquals("one tool should be private and published, there are " + count3, 1, count3);
     }
@@ -1211,7 +1211,7 @@ public class BasicIT extends BaseIT {
 
         // Check that tool exists and is published
         final long count = testingPostgres
-            .runSelectStatement("select count(*) from tool where ispublished='true' and privateaccess='true'", long.class);
+            .runSelectStatement("select count(*) from tool where state='PUBLISHED' and privateaccess='true'", long.class);
         Assert.assertEquals("one tool should be private and published, there are " + count, 1, count);
 
     }
@@ -1232,7 +1232,7 @@ public class BasicIT extends BaseIT {
 
         // Check that tool is published and has correct values
         final long count = testingPostgres.runSelectStatement(
-            "select count(*) from tool where ispublished='true' and privateaccess='true' and registry='test.dkr.ecr.test.amazonaws.com' and namespace = 'notarealnamespace' and name = 'notarealname'",
+            "select count(*) from tool where state='PUBLISHED' and privateaccess='true' and registry='test.dkr.ecr.test.amazonaws.com' and namespace = 'notarealnamespace' and name = 'notarealname'",
             long.class);
         Assert.assertEquals("one tool should be private, published and from amazon, there are " + count, 1, count);
 
@@ -1261,7 +1261,7 @@ public class BasicIT extends BaseIT {
 
         // Check that tool is published and has correct values
         final long count = testingPostgres.runSelectStatement(
-            "select count(*) from tool where ispublished='true' and privateaccess='true' and registry='images.sbgenomics.com' and namespace = 'notarealnamespace' and name = 'notarealname'",
+            "select count(*) from tool where state='PUBLISHED' and privateaccess='true' and registry='images.sbgenomics.com' and namespace = 'notarealnamespace' and name = 'notarealname'",
             long.class);
         assertEquals("one tool should be private, published and from seven bridges, there are " + count, 1, count);
 
@@ -1291,7 +1291,7 @@ public class BasicIT extends BaseIT {
 
         // Check that tool is published and has correct values
         final long count = testingPostgres.runSelectStatement(
-            "select count(*) from tool where ispublished='true' and privateaccess='true' and registry='test-images.sbgenomics.com' and namespace = 'notarealnamespace' and name = 'notarealname'",
+            "select count(*) from tool where state='PUBLISHED' and privateaccess='true' and registry='test-images.sbgenomics.com' and namespace = 'notarealnamespace' and name = 'notarealname'",
             long.class);
         assertEquals("one tool should be private, published and from seven bridges, there are " + count, 1, count);
 

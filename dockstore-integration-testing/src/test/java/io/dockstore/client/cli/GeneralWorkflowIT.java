@@ -123,7 +123,7 @@ public class GeneralWorkflowIT extends BaseIT {
         workflow = workflowsApi.refresh(workflow.getId());
 
         // check that valid is valid and full
-        final long count = testingPostgres.runSelectStatement("select count(*) from workflow where ispublished='t'", long.class);
+        final long count = testingPostgres.runSelectStatement("select count(*) from workflow where state='PUBLISHED'", long.class);
         assertEquals("there should be 0 published entries, there are " + count, 0, count);
         final long count2 = testingPostgres.runSelectStatement("select count(*) from workflowversion where valid='t'", long.class);
         assertEquals("there should be 2 valid versions, there are " + count2, 2, count2);
@@ -135,13 +135,13 @@ public class GeneralWorkflowIT extends BaseIT {
         // attempt to publish it
         workflowsApi.publish(workflow.getId(), SwaggerUtility.createPublishRequest(true));
 
-        final long count5 = testingPostgres.runSelectStatement("select count(*) from workflow where ispublished='t'", long.class);
+        final long count5 = testingPostgres.runSelectStatement("select count(*) from workflow where state='PUBLISHED'", long.class);
         assertEquals("there should be 1 published entry, there are " + count5, 1, count5);
 
         // unpublish
         workflowsApi.publish(workflow.getId(), SwaggerUtility.createPublishRequest(false));
 
-        final long count6 = testingPostgres.runSelectStatement("select count(*) from workflow where ispublished='t'", long.class);
+        final long count6 = testingPostgres.runSelectStatement("select count(*) from workflow where state='PUBLISHED'", long.class);
         assertEquals("there should be 0 published entries, there are " + count6, 0, count6);
     }
 
@@ -802,7 +802,7 @@ public class GeneralWorkflowIT extends BaseIT {
         workflow = workflowsApi.publish(workflow.getId(), SwaggerUtility.createPublishRequest(true));
         final long count4 = testingPostgres.runSelectStatement(
             "select count(*) from workflow where mode='FULL' and sourcecontrol = '" + SourceControl.GITLAB.toString()
-                + "' and organization = 'dockstore.test.user2' and repository = 'dockstore-workflow-example' and ispublished='t'",
+                + "' and organization = 'dockstore.test.user2' and repository = 'dockstore-workflow-example' and state='PUBLISHED'",
             long.class);
         assertEquals("there should be 1 published workflow, there are " + count4, 1, count4);
 
@@ -810,7 +810,7 @@ public class GeneralWorkflowIT extends BaseIT {
         workflow = workflowsApi.publish(workflow.getId(), SwaggerUtility.createPublishRequest(false));
         final long count5 = testingPostgres.runSelectStatement(
             "select count(*) from workflow where mode='FULL' and sourcecontrol = '" + SourceControl.GITLAB.toString()
-                + "' and organization = 'dockstore.test.user2' and repository = 'dockstore-workflow-example' and ispublished='t'",
+                + "' and organization = 'dockstore.test.user2' and repository = 'dockstore-workflow-example' and state='PUBLISHED'",
             long.class);
         assertEquals("there should be 0 published workflows, there are " + count5, 0, count5);
 

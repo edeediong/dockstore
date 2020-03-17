@@ -117,7 +117,7 @@ public class GeneralWorkflowRegressionIT extends BaseIT {
             new String[] { "--config", ResourceHelpers.resourceFilePath("config_file2.txt"), "workflow", "refresh", "--script" });
 
         // check that valid is valid and full
-        final long count = testingPostgres.runSelectStatement("select count(*) from workflow where ispublished='t'", long.class);
+        final long count = testingPostgres.runSelectStatement("select count(*) from workflow where state='PUBLISHED'", long.class);
         assertEquals("there should be 0 published entries, there are " + count, 0, count);
         final long count2 = testingPostgres.runSelectStatement("select count(*) from workflowversion where valid='t'", long.class);
         assertEquals("there should be 2 valid versions, there are " + count2, 2, count2);
@@ -131,7 +131,7 @@ public class GeneralWorkflowRegressionIT extends BaseIT {
             new String[] { "--config", ResourceHelpers.resourceFilePath("config_file2.txt"), "workflow", "publish", "--entry",
                 SourceControl.GITHUB.toString() + "/DockstoreTestUser2/hello-dockstore-workflow", "--script" });
 
-        final long count5 = testingPostgres.runSelectStatement("select count(*) from workflow where ispublished='t'", long.class);
+        final long count5 = testingPostgres.runSelectStatement("select count(*) from workflow where state='PUBLISHED'", long.class);
         assertEquals("there should be 1 published entry, there are " + count5, 1, count5);
 
         // unpublish
@@ -139,7 +139,7 @@ public class GeneralWorkflowRegressionIT extends BaseIT {
             new String[] { "--config", ResourceHelpers.resourceFilePath("config_file2.txt"), "workflow", "publish", "--entry",
                 SourceControl.GITHUB.toString() + "/DockstoreTestUser2/hello-dockstore-workflow", "--unpub", "--script" });
 
-        final long count6 = testingPostgres.runSelectStatement("select count(*) from workflow where ispublished='t'", long.class);
+        final long count6 = testingPostgres.runSelectStatement("select count(*) from workflow where state='PUBLISHED'", long.class);
         assertEquals("there should be 0 published entries, there are " + count6, 0, count6);
 
     }
@@ -439,7 +439,7 @@ public class GeneralWorkflowRegressionIT extends BaseIT {
                 SourceControl.GITLAB.toString() + "/dockstore.test.user2/dockstore-workflow-example", "--script" });
         final long count4 = testingPostgres.runSelectStatement(
             "select count(*) from workflow where mode='FULL' and sourcecontrol = '" + SourceControl.GITLAB.toString()
-                + "' and organization = 'dockstore.test.user2' and repository = 'dockstore-workflow-example' and ispublished='t'",
+                + "' and organization = 'dockstore.test.user2' and repository = 'dockstore-workflow-example' and state='PUBLISHED'",
             long.class);
         assertEquals("there should be 1 published workflow, there are " + count4, 1, count4);
 
@@ -459,7 +459,7 @@ public class GeneralWorkflowRegressionIT extends BaseIT {
                 SourceControl.GITLAB.toString() + "/dockstore.test.user2/dockstore-workflow-example", "--unpub", "--script" });
         final long count5 = testingPostgres.runSelectStatement(
             "select count(*) from workflow where mode='FULL' and sourcecontrol = '" + SourceControl.GITLAB.toString()
-                + "' and organization = 'dockstore.test.user2' and repository = 'dockstore-workflow-example' and ispublished='t'",
+                + "' and organization = 'dockstore.test.user2' and repository = 'dockstore-workflow-example' and state='PUBLISHED'",
             long.class);
         assertEquals("there should be 0 published workflows, there are " + count5, 0, count5);
 
