@@ -83,6 +83,12 @@
         <addNotNullConstraint tableName="workflowversion" columnName="islegacyversion"/>
     </changeSet>
 
+    <changeSet author="natalieperez (generated)" id="addChecksumColumntoSourceFile">
+        <addColumn tableName="sourcefile">
+            <column name="checksums" type="varchar"/>
+        </addColumn>
+    </changeSet>
+
     <changeSet author="aduncan (generated)" id="addStateColumnRemoveIsPublished">
         <addColumn tableName="service">
             <column defaultValue="DRAFT" name="state" type="text">
@@ -115,5 +121,4 @@
         <dropColumn columnName="ispublished" tableName="tool"/>
         <dropColumn columnName="ispublished" tableName="workflow"/>
     </changeSet>
-
 </databaseChangeLog>
