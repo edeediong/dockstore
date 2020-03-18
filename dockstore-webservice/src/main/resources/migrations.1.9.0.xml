@@ -106,7 +106,7 @@
             </column>
         </addColumn>
 
-        <sql dbms="postgres">
+        <sql dbms="postgresql">
             UPDATE service SET state = 'PUBLISHED' WHERE ispublished = true;
             UPDATE service SET state = 'DRAFT' WHERE ispublished = false;
 

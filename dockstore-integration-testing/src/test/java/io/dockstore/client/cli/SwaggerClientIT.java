@@ -158,7 +158,7 @@ public class SwaggerClientIT extends BaseIT {
         assertEquals(pagedToolsLowercase, pagedToolsUppercase);
 
         DockstoreTool container = containersApi.getContainerByToolPath("quay.io/test_org/test2", null);
-        assertEquals(container.getState(), DockstoreTool.StateEnum.DRAFT);
+        assertEquals(DockstoreTool.StateEnum.DRAFT, container.getState());
 
         long containerId = container.getId();
 
@@ -173,7 +173,7 @@ public class SwaggerClientIT extends BaseIT {
         ContainersApi userApi2 = new ContainersApi(getWebClient(false, false));
 
         DockstoreTool container = userApi1.getContainerByToolPath("quay.io/test_org/test2", null);
-        assertEquals(container.getState(), DockstoreTool.StateEnum.DRAFT);
+        assertEquals(DockstoreTool.StateEnum.DRAFT, container.getState());
 
         long containerId = container.getId();
         userApi1.updateLabels(containerId, "foo,spam,phone", "");
@@ -190,7 +190,7 @@ public class SwaggerClientIT extends BaseIT {
         WorkflowsApi userApi2 = new WorkflowsApi(getWebClient(false, false));
 
         Workflow workflow = userApi1.getWorkflowByPath("github.com/A/l", null, false);
-        assertEquals(workflow.getState(), DockstoreTool.StateEnum.PUBLISHED);
+        assertEquals(Workflow.StateEnum.PUBLISHED, workflow.getState());
 
         long containerId = workflow.getId();
 
@@ -470,14 +470,14 @@ public class SwaggerClientIT extends BaseIT {
         assertEquals(5, containers.size());
 
         DockstoreTool container = containersApi.getContainerByToolPath("quay.io/test_org/test5", null);
-        assertEquals(container.getState(), DockstoreTool.StateEnum.DRAFT);
+        assertEquals(DockstoreTool.StateEnum.DRAFT, container.getState());
 
         long containerId = container.getId();
 
         PublishRequest pub = SwaggerUtility.createPublishRequest(true);
 
         container = containersApi.publish(containerId, pub);
-        assertEquals(container.getState(), DockstoreTool.StateEnum.PUBLISHED);
+        assertEquals(DockstoreTool.StateEnum.PUBLISHED, container.getState());
 
         containers = containersApi.allPublishedContainers(null, null, null, null, null);
         assertEquals(2, containers.size());
@@ -485,7 +485,7 @@ public class SwaggerClientIT extends BaseIT {
         pub = SwaggerUtility.createPublishRequest(false);
 
         container = containersApi.publish(containerId, pub);
-        assertEquals(container.getState(), DockstoreTool.StateEnum.DRAFT);
+        assertEquals(DockstoreTool.StateEnum.DRAFT, container.getState());
     }
 
     @Test
