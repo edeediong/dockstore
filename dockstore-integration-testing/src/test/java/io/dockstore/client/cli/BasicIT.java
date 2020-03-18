@@ -123,7 +123,7 @@ public class BasicIT extends BaseIT {
         // Publish
         if (toPublish) {
             tool = containersApi.publish(tool.getId(), SwaggerUtility.createPublishRequest(true));
-            assertTrue(tool.isIsPublished());
+            assertEquals(tool.getState(), DockstoreTool.StateEnum.PUBLISHED);
         }
         return tool;
     }
@@ -445,14 +445,14 @@ public class BasicIT extends BaseIT {
             "git@github.com:DockstoreTestUser/dockstore-whalesay.git", "/Dockstore.cwl", "/Dockstore.wdl", "/Dockerfile",
             DockstoreTool.RegistryEnum.DOCKER_HUB, "master", "latest", true);
         bitbucketTool = toolsApi.refresh(bitbucketTool.getId());
-        assertTrue(bitbucketTool.isIsPublished());
+        assertEquals(bitbucketTool.getState(), DockstoreTool.StateEnum.PUBLISHED);
 
         // Register GitHub tool
         DockstoreTool githubTool = manualRegisterAndPublish(toolsApi, "dockstoretestuser", "dockerhubandgithub", "regular",
             "git@github.com:DockstoreTestUser/dockstore-whalesay.git", "/Dockstore.cwl", "/Dockstore.wdl", "/Dockerfile",
             DockstoreTool.RegistryEnum.DOCKER_HUB, "master", "latest", true);
         githubTool = toolsApi.refresh(githubTool.getId());
-        assertTrue(githubTool.isIsPublished());
+        assertEquals(githubTool.getState(), DockstoreTool.StateEnum.PUBLISHED);
     }
 
     /**

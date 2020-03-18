@@ -358,6 +358,7 @@ public abstract class Entry<S extends Entry, T extends Version> implements Compa
         this.gitUrl = gitUrl;
     }
 
+    @JsonIgnore
     public boolean getIsPublished() {
         return Objects.equals(getState(), State.PUBLISHED);
     }

@@ -101,7 +101,7 @@ public class GeneralWorkflowIT extends BaseIT {
         // Publish
         if (toPublish) {
             workflow = workflowsApi.publish(workflow.getId(), SwaggerUtility.createPublishRequest(true));
-            assertTrue(workflow.isIsPublished());
+            assertEquals(workflow.getState(), Workflow.StateEnum.PUBLISHED);
         }
         return workflow;
     }

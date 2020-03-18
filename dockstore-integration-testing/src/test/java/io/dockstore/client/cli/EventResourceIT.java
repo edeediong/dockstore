@@ -31,7 +31,7 @@ import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.experimental.categories.Category;
 
 import static io.swagger.client.model.DockstoreTool.ModeEnum.MANUAL_IMAGE_PATH;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 /**
  * This test was originally in BasicIT, but it sometimes fails on travis and fails consistently locally if it is run with another test
@@ -97,7 +97,7 @@ public class EventResourceIT extends BaseIT {
         // Publish
         if (toPublish) {
             tool = containersApi.publish(tool.getId(), SwaggerUtility.createPublishRequest(true));
-            assertTrue(tool.isIsPublished());
+            assertEquals(tool.getState(), DockstoreTool.StateEnum.PUBLISHED);
         }
         return tool;
     }

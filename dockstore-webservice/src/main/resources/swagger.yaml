@@ -6369,8 +6369,6 @@ definitions:
         uniqueItems: true
         items:
           $ref: "#/definitions/FileFormat"
-      isPublished:
-        type: "boolean"
       last_modified_date:
         type: "string"
         format: "date-time"
@@ -6614,8 +6612,6 @@ definitions:
         uniqueItems: true
         items:
           $ref: "#/definitions/FileFormat"
-      isPublished:
-        type: "boolean"
       last_modified_date:
         type: "string"
         format: "date-time"
@@ -8085,8 +8081,6 @@ definitions:
         items:
           $ref: "#/definitions/FileFormat"
       isChecker:
-        type: "boolean"
-      isPublished:
         type: "boolean"
       last_modified_date:
         type: "string"

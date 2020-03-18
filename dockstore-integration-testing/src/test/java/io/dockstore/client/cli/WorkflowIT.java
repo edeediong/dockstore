@@ -198,8 +198,10 @@ public class WorkflowIT extends BaseIT {
         // Publish
         if (toPublish) {
             workflow = workflowsApi.publish(workflow.getId(), SwaggerUtility.createPublishRequest(true));
+            assertEquals(workflow.getState(), Workflow.StateEnum.PUBLISHED);
+        } else {
+            assertEquals(workflow.getState(), Workflow.StateEnum.DRAFT);
         }
-        assertEquals(workflow.isIsPublished(), toPublish);
         return workflow;
     }
 
@@ -517,7 +519,7 @@ public class WorkflowIT extends BaseIT {
             .manualRegister(SourceControl.GITHUB.getFriendlyName(), "DockstoreTestUser2/md5sum-checker", "/md5sum/md5sum-workflow.cwl",
                 "test", "cwl", null);
         Workflow refresh = workflowApi.refresh(workflow.getId());
-        assertFalse(refresh.isIsPublished());
+        assertEquals(refresh.getState(), Workflow.StateEnum.DRAFT);
         workflowApi.registerCheckerWorkflow("checker-workflow-wrapping-workflow.cwl", workflow.getId(), "cwl", "checker-input-cwl.json");
         workflowApi.refresh(workflow.getId());
 

@@ -214,8 +214,6 @@ components:
             $ref: '#/components/schemas/FileFormat'
           type: array
           uniqueItems: true
-        isPublished:
-          type: boolean
         labels:
           items:
             $ref: '#/components/schemas/Label'
@@ -1279,8 +1277,6 @@ components:
           type: array
           uniqueItems: true
         isChecker:
-          type: boolean
-        isPublished:
           type: boolean
         labels:
           items:

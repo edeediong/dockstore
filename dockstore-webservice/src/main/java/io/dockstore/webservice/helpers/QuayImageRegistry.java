@@ -34,6 +34,7 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import io.dockstore.common.Registry;
+import io.dockstore.common.State;
 import io.dockstore.webservice.core.Checksum;
 import io.dockstore.webservice.core.Image;
 import io.dockstore.webservice.core.Tag;
@@ -194,6 +195,7 @@ public class QuayImageRegistry extends AbstractImageRegistry {
                 tools.forEach(container -> container.setRegistry(Registry.QUAY_IO.getDockerPath()));
                 // not quite correct, they could be mixed but how can we tell from quay?
                 tools.forEach(container -> container.setMode(ToolMode.AUTO_DETECT_QUAY_TAGS_AUTOMATED_BUILDS));
+                tools.forEach(tool -> tool.setState(State.DRAFT));
                 toolList.addAll(tools);
             } catch (ApiException | IllegalAccessException | InvocationTargetException ex) {
                 LOG.warn(quayToken.getUsername() + " Exception: {}", ex);
