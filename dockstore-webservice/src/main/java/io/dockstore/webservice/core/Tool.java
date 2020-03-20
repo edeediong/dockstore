@@ -19,6 +19,7 @@ package io.dockstore.webservice.core;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -419,5 +420,22 @@ public class Tool extends Entry<Tool, Tag> {
 
     public void setDefaultTestCwlParameterFile(String defaultTestCwlParameterFile) {
         getDefaultPaths().put(DescriptorLanguage.FileType.CWL_TEST_JSON, defaultTestCwlParameterFile);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Tool that = (Tool)o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getRegistry(), that.getRegistry()) && Objects.equals(getNamespace(), that.getNamespace()) && Objects.equals(getName(), that.getName()) && Objects.equals(getToolname(), that.getToolname());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getRegistry(), getNamespace(), getName(), getToolname());
     }
 }

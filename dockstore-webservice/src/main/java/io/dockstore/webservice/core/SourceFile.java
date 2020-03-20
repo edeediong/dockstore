@@ -21,6 +21,7 @@ import java.sql.Timestamp;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -187,6 +188,23 @@ public class SourceFile implements Comparable<SourceFile> {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this).add("id", id).add("type", type).add("path", path).add("absolutePath", absolutePath).toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SourceFile that = (SourceFile)o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getType(), that.getType()) && Objects.equals(getAbsolutePath(), that.getAbsolutePath());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getType(), getAbsolutePath());
     }
 
     public boolean isFrozen() {

@@ -15,6 +15,8 @@
  */
 package io.dockstore.webservice.core;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -87,5 +89,22 @@ public class BioWorkflow extends Workflow {
 
     public Event.Builder getEventBuilder() {
         return new Event.Builder().withBioWorkflow(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BioWorkflow that = (BioWorkflow)o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getSourceControl(), that.getSourceControl()) && Objects.equals(getOrganization(), that.getOrganization()) && Objects.equals(getRepository(), that.getRepository()) && Objects.equals(getWorkflowName(), that.getWorkflowName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getSourceControl(), getOrganization(), getRepository(), getWorkflowName());
     }
 }
