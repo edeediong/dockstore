@@ -46,4 +46,6 @@ public class BioWorkflowDAO extends EntryDAO<BioWorkflow> {
     public List<MyWorkflows> findUserBioWorkflows(long userId) {
         return list(namedQuery("io.dockstore.webservice.core.BioWorkflow.findUserBioWorkflows").setParameter("userId", userId));
     }
+
+
 }
