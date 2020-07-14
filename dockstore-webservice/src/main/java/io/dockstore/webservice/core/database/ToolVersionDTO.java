@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import io.dockstore.common.DescriptorLanguage;
 
 public class ToolVersionDTO {
+    private static final Gson GSON = new Gson();
     private final long id;
     private final long entryId;
 
@@ -26,7 +27,6 @@ public class ToolVersionDTO {
     private final boolean signed = false; // We don't support this feature yet
     private final List<String> includedApps = new ArrayList<>();
     private final boolean hidden;
-    private static final Gson GSON = new Gson();
 
     @SuppressWarnings("checkstyle:ParameterNumber")
     public ToolVersionDTO(final long id, final long entryId, final String author, final Boolean verified, final String name, final boolean production,

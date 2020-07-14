@@ -159,13 +159,13 @@ public final class ToolsImplCommon {
     private static ImageData convertImageDTO(final ImageDTO imageDTO) {
         final ImageData imageData = new ImageData();
         imageData.setImageType(ImageType.DOCKER);
-        imageData.setRegistryHost(imageDTO.getRegistryHost().getDockerPath());
-        imageData.setImageName(constructName(Arrays.asList(imageDTO.getRepository(), imageDTO.getTag())));
+        imageData.setRegistryHost(imageDTO.getId().getImageRegistry().getDockerPath());
+        imageData.setImageName(constructName(Arrays.asList(imageDTO.getId().getRepository(), imageDTO.getId().getTag())));
         //TODO: hook up proper size
         imageData.setSize(0);
         //TODO: hook up proper date
         imageData.setUpdated(new Date().toString());
-        imageData.setChecksum(imageDTO.getChecksums().stream().map(checksum -> {
+        imageData.setChecksum(imageDTO.getId().getChecksums().stream().map(checksum -> {
             final Checksum trsChecksum = new Checksum();
             trsChecksum.setType(DOCKER_IMAGE_SHA_TYPE_FOR_TRS);
             trsChecksum.setChecksum(checksum.getChecksum());
