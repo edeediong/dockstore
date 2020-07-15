@@ -85,6 +85,7 @@ import org.hibernate.annotations.UpdateTimestamp;
         @NamedQuery(name = "io.dockstore.webservice.core.Entry.getVersions", query = "SELECT new io.dockstore.webservice.core.database.ToolVersionDTO(wv.id, e.id, vm.author, vm.verified, wv.name, wv.frozen, wv.lastModified, vm.hidden, vm.verifiedSource) from Entry e join e.workflowVersions wv left join wv.versionMetadata vm where e.id in :ids"),
         @NamedQuery(name = "io.dockstore.webservice.core.Entry.findDescriptorTypes", query = "SELECT distinct new io.dockstore.webservice.core.database.FileTypeDTO(v.id, sf.type) from Version v join v.sourceFiles sf where v.id in :ids"),
         @NamedQuery(name = "io.dockstore.webservice.core.Entry.getImagesForVersions", query = "SELECT new io.dockstore.webservice.core.database.ImageDTO(i.id, wv.id, i.imageRegistry, i.imageID, i.repository, i.tag, i.checksums) from Version wv right join wv.images i where wv.id in :ids"),
+        @NamedQuery(name = "io.dockstore.webservice.core.Entry.getActualImagesForVersions", query = "SELECT i, wv.id from Version wv right join wv.images i where wv.id in :ids"),
         @NamedQuery(name = "io.dockstore.webservice.core.Entry.getAliases", query = "select new io.dockstore.webservice.core.database.AliasDTO(e.id, KEY(a)) from Entry e join e.aliases a where e.id in :ids")
 })
 // TODO: Replace this with JPA when possible

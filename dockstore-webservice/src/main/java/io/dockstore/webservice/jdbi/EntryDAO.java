@@ -259,6 +259,7 @@ public abstract class EntryDAO<T extends Entry> extends AbstractDockstoreDAO<T> 
                 .collect(Collectors.groupingBy(FileTypeDTO::getVersionId));
 
         final List<ImageDTO> images = list(this.currentSession().getNamedQuery("io.dockstore.webservice.core.Entry.getImagesForVersions").setParameterList("ids", versionIds));
+        final List thing = list(this.currentSession().getNamedQuery("io.dockstore.webservice.core.Entry.getActualImagesForVersions").setParameterList("ids", versionIds));
         final Map<Long, List<ImageDTO>> versionImageMap = images.stream().collect(Collectors.groupingBy(ImageDTO::getVersionId));
 
         versions.forEach(version -> {
